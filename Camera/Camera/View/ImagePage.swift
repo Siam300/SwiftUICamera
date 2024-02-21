@@ -8,27 +8,37 @@
 import SwiftUI
 
 struct ImagePage: View {
+    @State private var selectedImage: ImageItem?
+    
     private let gridItems: [GridItem] = [
         .init(.flexible(), spacing: 1),
         .init(.flexible(), spacing: 1),
         .init(.flexible(), spacing: 1)
     ]
-    private let imageDimention = (UIScreen.main.bounds.width / 3) - 1
+    private let imageDimension = (UIScreen.main.bounds.width / 3) - 1
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: gridItems, spacing: 2) {
-                ForEach(1 ... 33, id: \.self) { image in
-                    Image(systemName: "person.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: imageDimention, height: imageDimention)
-                        .clipped()
-                        .padding()
+        NavigationView {
+            ScrollView {
+                LazyVGrid(columns: gridItems, spacing: 2) {
+                    ForEach(1 ... 33, id: \.self) { index in
+                        Image(systemName: "person.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: imageDimension, height: imageDimension)
+                            .clipped()
+                            .padding()
+                            .onTapGesture {
+                                selectedImage = ImageItem(imageName: "person.fill")
+                            }
+                    }
                 }
             }
+            .navigationBarTitle("Images")
+            .fullScreenCover(item: $selectedImage) { imageItem in
+                FullScreenImageView(imageName: imageItem.imageName)
+            }
         }
-        .navigationBarTitle("Images")
     }
 }
 
