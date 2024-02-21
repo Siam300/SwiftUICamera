@@ -35,6 +35,7 @@ struct ImagePage: View {
                 }
             }
             .navigationBarTitle("Images")
+            .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(item: $selectedImage) { imageItem in
                 FullScreenImageView(imageName: imageItem.imageName)
             }
