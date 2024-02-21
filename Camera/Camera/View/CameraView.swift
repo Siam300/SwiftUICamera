@@ -8,54 +8,80 @@
 import SwiftUI
 
 struct CameraView: View {
-    @StateObject var model = CameraViewModel()
+    @StateObject var viewModel = CameraViewModel()
+    
     @State var currentZoomFactor: CGFloat = 1.0
     
     var body: some View {
-        ZStack {
-            Color.black.edgesIgnoringSafeArea(.all)
-            
-            VStack {
-                GeometryReader { geometry in
-                    ZStack {
-                        
-                        Rectangle()
-                            .frame(width: geometry.size.width, height: geometry.size.height)
-                            .foregroundColor(.blue)
-                        
-                        VStack {
-                            Button(action: {
-                                print("DEBUG: Camera Flash Button tapped....")
-                            }, label: {
-                                Image(systemName: "bolt.fill")
-                                    .font(.system(size: 20, weight: .medium, design: .default))
+        GeometryReader { reader in
+            ZStack {
+                Color.black.edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    Button(action: {
+                        viewModel.switchFlash()
+                    }, label: {
+                        Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+                            .font(.system(size: 20, weight: .medium, design: .default))
+                    })
+                    .accentColor(viewModel.isFlashOn ? .yellow : .white)
+                    
+                    CameraPreview(session: viewModel.session)
+                        .gesture(
+                            DragGesture().onChanged({ (val) in
+                                //  Only accept vertical drag
+                                if abs(val.translation.height) > abs(val.translation.width) {
+                                    //  Get the percentage of vertical screen space covered by drag
+                                    let percentage: CGFloat = -(val.translation.height / reader.size.height)
+                                    //  Calculate new zoom factor
+                                    let calc = currentZoomFactor + percentage
+                                    //  Limit zoom factor to a maximum of 5x and a minimum of 1x
+                                    let zoomFactor: CGFloat = min(max(calc, 1), 5)
+                                    //  Store the newly calculated zoom factor
+                                    currentZoomFactor = zoomFactor
+                                    //  Sets the zoom factor to the capture device session
+                                    viewModel.zoom(with: zoomFactor)
+                                }
                             })
-                            .accentColor(.white)
-                            Spacer()
-                            
-                            HStack {
-                                capturedPhotoThumbnail
-                                
-                                Spacer()
-                                
-                                captureButton
-                                
-                                Spacer()
-                                
-                                flipCameraButton
-                            }
-                            .padding(.horizontal, 20)
+                        )
+                        .onAppear {
+                            viewModel.configure()
                         }
+                        .alert(isPresented: $viewModel.showAlertError, content: {
+                            Alert(title: Text(viewModel.alertError.title), message: Text(viewModel.alertError.message), dismissButton: .default(Text(viewModel.alertError.primaryButtonTitle), action: {
+                                viewModel.alertError.primaryAction?()
+                            }))
+                        })
+                        .overlay(
+                            Group {
+                                if viewModel.willCapturePhoto {
+                                    Color.black
+                                }
+                            }
+                        )
+                        .animation(.easeInOut)
+                    
+                    HStack {
+                        capturedPhotoThumbnail
+                        
+                        Spacer()
+                        
+                        captureButton
+                        
+                        Spacer()
+                        
+                        flipCameraButton
+                        
                     }
+                    .padding(.horizontal, 20)
                 }
             }
-
         }
     }
     
     var captureButton: some View {
         Button(action: {
-            print("DEBUG: Camera shutter button tapped...")
+            viewModel.capturePhoto()
         }, label: {
             Circle()
                 .foregroundColor(.white)
@@ -70,19 +96,25 @@ struct CameraView: View {
     
     var capturedPhotoThumbnail: some View {
         Group {
-            Image(systemName: "person.fill")
-                .resizable()
-                .foregroundColor(.white)
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 60, height: 60)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .animation(.spring())
+            if viewModel.photo != nil {
+                Image(uiImage: viewModel.photo.image!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .animation(.spring())
+                
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: 60, height: 60, alignment: .center)
+                    .foregroundColor(.black)
+            }
         }
     }
     
     var flipCameraButton: some View {
         Button(action: {
-            print("DEBUG: Flip Camera Button tapped....")
+            viewModel.flipCamera()
         }, label: {
             Circle()
                 .foregroundColor(Color.gray.opacity(0.2))
