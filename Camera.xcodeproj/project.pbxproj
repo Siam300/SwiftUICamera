@@ -10,6 +10,7 @@
 		C921AAD32B83A01200CC4FB6 /* CameraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C921AAD22B83A01200CC4FB6 /* CameraApp.swift */; };
 		C921AAD72B83A01500CC4FB6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C921AAD62B83A01500CC4FB6 /* Assets.xcassets */; };
 		C921AADA2B83A01500CC4FB6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C921AAD92B83A01500CC4FB6 /* Preview Assets.xcassets */; };
+		C9510FEB2B8635AE00C30C4A /* ImagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9510FEA2B8635AE00C30C4A /* ImagePage.swift */; };
 		C9E58A362B83ABB300F5E07E /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E58A352B83ABB300F5E07E /* CameraService.swift */; };
 		C9E58A382B83ABC100F5E07E /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E58A372B83ABC100F5E07E /* PhotoCaptureProcessor.swift */; };
 		C9E58A3A2B83AC0600F5E07E /* CameraServiceEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E58A392B83AC0600F5E07E /* CameraServiceEnums.swift */; };
@@ -25,6 +26,7 @@
 		C921AAD22B83A01200CC4FB6 /* CameraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraApp.swift; sourceTree = "<group>"; };
 		C921AAD62B83A01500CC4FB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C921AAD92B83A01500CC4FB6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C9510FEA2B8635AE00C30C4A /* ImagePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePage.swift; sourceTree = "<group>"; };
 		C9E58A352B83ABB300F5E07E /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		C9E58A372B83ABC100F5E07E /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCaptureProcessor.swift; sourceTree = "<group>"; };
 		C9E58A392B83AC0600F5E07E /* CameraServiceEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraServiceEnums.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				C9E58A3F2B83AD0900F5E07E /* CameraView.swift */,
 				C9E58A452B83AF6100F5E07E /* CameraPreview.swift */,
+				C9510FEA2B8635AE00C30C4A /* ImagePage.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -190,6 +193,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9510FEB2B8635AE00C30C4A /* ImagePage.swift in Sources */,
 				C9E58A362B83ABB300F5E07E /* CameraService.swift in Sources */,
 				C9E58A382B83ABC100F5E07E /* PhotoCaptureProcessor.swift in Sources */,
 				C9E58A402B83AD0900F5E07E /* CameraView.swift in Sources */,

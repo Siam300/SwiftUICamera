@@ -128,13 +128,6 @@ struct CameraView: View {
                         .foregroundColor(.white))
         })
     }
-    
-    struct ImagePage: View {
-        var body: some View {
-            Text("All Images Here...")
-                .navigationBarTitle("Images")
-        }
-    }
 }
 
 #Preview {
