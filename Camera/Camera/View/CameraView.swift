@@ -13,70 +13,72 @@ struct CameraView: View {
     @State var currentZoomFactor: CGFloat = 1.0
     
     var body: some View {
-        GeometryReader { reader in
-            ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+        ZStack {
+            Color.gray.edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Button(action: {
+                    viewModel.switchFlash()
+                }, label: {
+                    Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+                        .font(.system(size: 20, weight: .medium, design: .default))
+                })
+                .accentColor(viewModel.isFlashOn ? .yellow : .white)
                 
-                VStack {
-                    Button(action: {
-                        viewModel.switchFlash()
-                    }, label: {
-                        Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                            .font(.system(size: 20, weight: .medium, design: .default))
-                    })
-                    .accentColor(viewModel.isFlashOn ? .yellow : .white)
-                    
-                    CameraPreview(session: viewModel.session)
-                        .gesture(
-                            DragGesture().onChanged({ (val) in
-                                //  Only accept vertical drag
-                                if abs(val.translation.height) > abs(val.translation.width) {
-                                    //  Get the percentage of vertical screen space covered by drag
-                                    let percentage: CGFloat = -(val.translation.height / reader.size.height)
-                                    //  Calculate new zoom factor
-                                    let calc = currentZoomFactor + percentage
-                                    //  Limit zoom factor to a maximum of 5x and a minimum of 1x
-                                    let zoomFactor: CGFloat = min(max(calc, 1), 5)
-                                    //  Store the newly calculated zoom factor
-                                    currentZoomFactor = zoomFactor
-                                    //  Sets the zoom factor to the capture device session
-                                    viewModel.zoom(with: zoomFactor)
-                                }
-                            })
-                        )
-                        .onAppear {
-                            viewModel.configure()
-                        }
-                        .alert(isPresented: $viewModel.showAlertError, content: {
-                            Alert(title: Text(viewModel.alertError.title), message: Text(viewModel.alertError.message), dismissButton: .default(Text(viewModel.alertError.primaryButtonTitle), action: {
-                                viewModel.alertError.primaryAction?()
-                            }))
-                        })
-                        .overlay(
-                            Group {
-                                if viewModel.willCapturePhoto {
-                                    Color.black
-                                }
+                Spacer()
+                
+                CameraPreview(session: viewModel.session)
+                    .gesture(
+                        DragGesture().onChanged({ (val) in
+                            // Only accept vertical drag
+                            if abs(val.translation.height) > abs(val.translation.width) {
+                                // Get the percentage of vertical screen space covered by drag
+                                let percentage: CGFloat = -(val.translation.height / UIScreen.main.bounds.height)
+                                // Calculate new zoom factor
+                                let calc = currentZoomFactor + percentage
+                                // Limit zoom factor to a maximum of 5x and a minimum of 1x
+                                let zoomFactor: CGFloat = min(max(calc, 1), 5)
+                                // Store the newly calculated zoom factor
+                                currentZoomFactor = zoomFactor
+                                // Sets the zoom factor to the capture device session
+                                viewModel.zoom(with: zoomFactor)
                             }
-                        )
-                        .animation(.easeInOut)
-                    
-                    HStack {
-                        capturedPhotoThumbnail
-                        
-                        Spacer()
-                        
-                        captureButton
-                        
-                        Spacer()
-                        
-                        flipCameraButton
-                        
+                        })
+                    )
+                    .onAppear {
+                        viewModel.configure()
                     }
-                    .padding(.horizontal, 20)
+                    .alert(isPresented: $viewModel.showAlertError, content: {
+                        Alert(title: Text(viewModel.alertError.title), message: Text(viewModel.alertError.message), dismissButton: .default(Text(viewModel.alertError.primaryButtonTitle), action: {
+                            viewModel.alertError.primaryAction?()
+                        }))
+                    })
+                    .overlay(
+                        Group {
+                            if viewModel.willCapturePhoto {
+                                Color.black
+                            }
+                        }
+                    )
+                    .animation(.easeInOut)
+                
+                Spacer()
+                
+                HStack {
+                    capturedPhotoThumbnail
+                    
+                    Spacer()
+                    
+                    captureButton
+                    
+                    Spacer()
+                    
+                    flipCameraButton
                 }
+                .padding(.horizontal, 20)
             }
         }
+
     }
     
     var captureButton: some View {
